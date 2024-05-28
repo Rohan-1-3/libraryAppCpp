@@ -156,25 +156,31 @@ public:
     }
 
     void addBook() {
-        Book* tempBooks = new Book[Book::bookCount + 1];
-        int choice;
-        cout << "0) Create a default Book\n1) Create a book with fixed data\n";
-        cin >> choice;
-        cin.ignore();
-        if (choice == 0) {
-            tempBooks[Book::bookCount] = Book();
-        } else if (choice == 1) {
-            tempBooks[Book::bookCount] = getBookData();
-        } else {
-            cout << "Invalid Input" << endl;
-            delete[] tempBooks;
-            return;
+    Book* tempBooks = new Book[Book::bookCount + 1];
+    int choice;
+    cout << "0) Create a default Book\n1) Create a book with fixed data\n";
+    cin >> choice;
+    cin.ignore();
+    if (choice == 0) {
+        for (int i = 0; i < Book::bookCount; ++i) {
+            tempBooks[i] = books[i];  // Copy existing books
         }
-        delete[] books; // Deallocate memory for the old array
-        books = tempBooks; // Assign the new array to books pointer
-        ++Book::bookCount;
-        cout << "New Book Added" << endl;
+        tempBooks[Book::bookCount] = Book();  // Add new book with default data
+    } else if (choice == 1) {
+        for (int i = 0; i < Book::bookCount; ++i) {
+            tempBooks[i] = books[i];  // Copy existing books
+        }
+        tempBooks[Book::bookCount] = getBookData();  // Add new book with user data
+    } else {
+        cout << "Invalid Input" << endl;
+        delete[] tempBooks;
+        return;
     }
+    delete[] books; // Deallocate memory for the old array
+    books = tempBooks; // Assign the new array to books pointer
+    ++Book::bookCount;
+    cout << "New Book Added" << endl;
+}
 
     void displayAllBooks() {
         for (int i = 0; i < Book::bookCount; i++) {
