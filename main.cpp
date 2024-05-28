@@ -26,15 +26,14 @@ public:
     }
 
     void display() {
-        displayLines();
         cout << "Details of the Publisher: \n";
         cout << "Name: " << name << endl << "Address: " << address << endl;
-        displayLines();
     }
 
     void updateData() {
         string tempString;
         displayChoice();
+        displayLines();
         cout << "\nEnter the new name of the Publisher:";
         getline(cin, tempString);
         if (!tempString.empty())
@@ -63,15 +62,14 @@ public:
     }
 
     void display() {
-        displayLines();
         cout << "Details of the Author: \n";
         cout << "Name: " << name << endl << "Title: " << title << endl;
-        displayLines();
     }
 
     void updateData() {
         string tempString;
         displayChoice();
+        displayLines();
         cout << "\nEnter the new name of the Author:";
         getline(cin, tempString);
         if (!tempString.empty())
@@ -123,7 +121,6 @@ public:
 
 
     void display() {
-        displayLines();
         cout << endl << "Details of the book: " << endl;
         cout << "Title: " << title << endl;
         cout << "ISBN: " << isbn << endl;
@@ -131,7 +128,6 @@ public:
         cout << "Price: " << price << endl;
         publisher->display();
         author->display();
-        displayLines();
     }
 
     void displayBookTitles(int n){
@@ -142,6 +138,7 @@ public:
         string tempString;
         cout << endl << "Enter the details of the book: " << endl;
         displayChoice();
+        displayLines();
         cout << "Enter Book Title: ";
         getline(cin, tempString);
         if (!tempString.empty())
@@ -153,13 +150,22 @@ public:
             isbn = tempString;
 
         cout << "Enter Book Year Released: ";
-        cin >> yearReleased;
+        cin >> tempString;
+        if (!tempString.empty()) {
+            yearReleased = stoi(tempString); // Convert string to integer
+        }
 
         cout << "Enter Book Edition Year: ";
-        cin >> editionYear;
+        cin >> tempString;
+        if (!tempString.empty()) {
+            editionYear = stoi(tempString); // Convert string to integer
+        }
 
         cout << "Enter Book Price: ";
-        cin >> price;
+        cin >> tempString;
+        if (!tempString.empty()) {
+            price = stof(tempString); // Convert string to float
+        }
 
         cin.ignore(); // Clear the newline character from the buffer
 
@@ -206,7 +212,6 @@ public:
     delete[] books; // Deallocate memory for the old array
     books = tempBooks; // Assign the new array to books pointer
     ++Book::bookCount;
-    displayLines();
     cout << "New Book Added" << endl;
     displayLines();
 }
@@ -234,6 +239,7 @@ public:
             return;
         }
         books[n].update();
+        cout << "Book updated successfully." << endl;
     }
 
     void deleteBook(int n) {
@@ -251,7 +257,6 @@ public:
         delete[] books;
         books = tempBooks;
         --Book::bookCount;
-        displayLines();
         cout << "Book deleted successfully." << endl;
         displayLines();
     }
