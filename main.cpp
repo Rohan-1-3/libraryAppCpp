@@ -6,6 +6,10 @@ void displayChoice() {
     cout << "\n1) Input data to update\n2) Input enter to avoid update\n";
 }
 
+void displayLines(){
+    cout << "\n--------------------------------------------------------------------------------\n";
+}
+
 class Publisher {
     string name;
     string address;
@@ -22,8 +26,10 @@ public:
     }
 
     void display() {
-        cout << "\nDetails of the Publisher: \n";
+        displayLines();
+        cout << "Details of the Publisher: \n";
         cout << "Name: " << name << endl << "Address: " << address << endl;
+        displayLines();
     }
 
     void updateData() {
@@ -57,8 +63,10 @@ public:
     }
 
     void display() {
-        cout << "\nDetails of the Author: \n";
+        displayLines();
+        cout << "Details of the Author: \n";
         cout << "Name: " << name << endl << "Title: " << title << endl;
+        displayLines();
     }
 
     void updateData() {
@@ -73,6 +81,10 @@ public:
         getline(cin, tempString);
         if (!tempString.empty())
             title = tempString;
+    }
+
+    string getName(){
+        return name;
     }
 };
 
@@ -99,11 +111,19 @@ public:
     }
 
     Book(string newTitle, string newISBN, int newYearReleased, int newEditionYear, float newPrice,
-         const Publisher& newPublisher, const Author& newAuthor) :
-        title(newTitle), isbn(newISBN), yearReleased(newYearReleased), editionYear(newEditionYear), price(newPrice),
-        publisher(new Publisher(newPublisher)), author(new Author(newAuthor)) {}
+        Publisher& newPublisher, Author& newAuthor) {
+        title = newTitle;
+        isbn = newISBN;
+        yearReleased = newYearReleased;
+        editionYear = newEditionYear;
+        price = newPrice;
+        publisher = new Publisher(newPublisher);
+        author = new Author(newAuthor);
+    }
+
 
     void display() {
+        displayLines();
         cout << endl << "Details of the book: " << endl;
         cout << "Title: " << title << endl;
         cout << "ISBN: " << isbn << endl;
@@ -111,6 +131,11 @@ public:
         cout << "Price: " << price << endl;
         publisher->display();
         author->display();
+        displayLines();
+    }
+
+    void displayBookTitles(int n){
+        cout << n << "\t\t" << title << "\t\t" << author->getName() << "\t\t" << price << endl;
     }
 
     void update() {
@@ -149,7 +174,9 @@ class Library {
     Book* books;
 
 public:
-    Library() : books(nullptr) {}
+    Library(){
+        books = nullptr;
+    }
 
     ~Library() {
         delete[] books; // Deallocate memory for the array of books
@@ -179,14 +206,18 @@ public:
     delete[] books; // Deallocate memory for the old array
     books = tempBooks; // Assign the new array to books pointer
     ++Book::bookCount;
+    displayLines();
     cout << "New Book Added" << endl;
+    displayLines();
 }
 
     void displayAllBooks() {
+        displayLines();
+        cout << "S.N." << "\t\t" << "Title" << "\t\t" << "Author" << "\t\t" << "Price" << endl;
         for (int i = 0; i < Book::bookCount; i++) {
-            cout << i << ": ";
-            books[i].display();
+            books[i].displayBookTitles(i+1);
         }
+        displayLines();
     }
 
     void displayBook(int n) {
@@ -220,7 +251,9 @@ public:
         delete[] books;
         books = tempBooks;
         --Book::bookCount;
+        displayLines();
         cout << "Book deleted successfully." << endl;
+        displayLines();
     }
 
 private:
@@ -265,15 +298,53 @@ private:
 
 int main() {
     Library lib;
-    lib.addBook();
-    lib.addBook();
-    cout << "\n--------------------------------------------\n";
-    lib.displayBook(0);
-    cout << "\n--------------------------------------------\n";
-    lib.displayAllBooks();
-    cout << "\n--------------------------------------------\n";
-    lib.deleteBook(0);
-    cout << "\n--------------------------------------------\n";
-    lib.displayAllBooks();
+    int choice;
+
+    do {
+        cout << "\nLibrary Menu:" << endl;
+        cout << "1. Add a Book" << endl;
+        cout << "2. Display All Books" << endl;
+        cout << "3. Display a Book" << endl;
+        cout << "4. Delete a Book" << endl;
+        cout << "5. Update a Book" << endl;
+        cout << "6. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore(); // Clear the newline character from the buffer
+
+        switch(choice) {
+            case 1:
+                lib.addBook();
+                break;
+            case 2:
+                lib.displayAllBooks();
+                break;
+            case 3:
+                int bookIndex;
+                cout << "Enter the index of the book to display: ";
+                cin >> bookIndex;
+                lib.displayBook(bookIndex-1);
+                break;
+            case 4:
+                int bookIndexToDelete;
+                cout << "Enter the index of the book to delete: ";
+                cin >> bookIndexToDelete;
+                lib.deleteBook(bookIndexToDelete-1);
+                break;
+            case 5:
+                int bookIndexToUpdate;
+                cout << "Enter the index of book to update: ";
+                cin >> bookIndexToUpdate;
+                lib.updateBook(bookIndexToUpdate-1);
+                break;
+            case 6:
+                cout << "Exiting the library." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please enter a number between 1 and 5." << endl;
+                break;
+        }
+    } while(choice != 6);
+
     return 0;
 }
