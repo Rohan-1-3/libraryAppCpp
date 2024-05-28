@@ -76,7 +76,56 @@ class Author{
     }
 };
 
+class Book{
+    string title;
+    string isbn;
+    int yearReleased;
+    int editionYear;
+    float price;
+    Publisher* publisher;
+    Author* author;
+
+    public:
+    static int bookCount;
+    Book(){
+        bookCount++;
+        title = "Some Title";
+        isbn = "1234567890";
+        yearReleased = 1980;
+        editionYear = 2024;
+        price = 420.0;
+        publisher = new Publisher();
+        author = new Author();
+    }
+
+    Book(string newTitle, string newISBN, int newYearReleased, int newEditionYear, float newPrice,
+        Publisher& newPublisher, Author& newAuthor){
+            bookCount++;
+            title = newTitle;
+            isbn = newISBN;
+            yearReleased = newYearReleased;
+            editionYear = newEditionYear;
+            price = newPrice;
+            publisher = new Publisher(newPublisher);
+            author = new Author(newAuthor);
+    };
+
+    void display(){
+        cout << endl << "Details of the book: " << endl;
+        cout << "Title: " << title << endl;
+        cout << "ISBN: " << isbn << endl;
+        cout << "Year Released: " << yearReleased << endl << "Edition Year: " << editionYear << endl;
+        cout << "Price: " << price << endl;
+        publisher->display();
+        author->display();
+    }
+};
+
+int Book::bookCount = 0;
+
+
+
 int main(){
-    cout << "Hello World";
+
     return 0;
 }
