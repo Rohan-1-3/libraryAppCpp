@@ -4,7 +4,7 @@
 using namespace std;
 
 void displayChoice(){
-    cout << "1) Enter data to update\n2) Enter n to avoid update\n";
+    cout << "\n1) Input data to update\n2) Input enter to avoid update\n";
 }
 
 class Publisher{
@@ -27,16 +27,15 @@ class Publisher{
 
     void updateData(){
         string tempString;
-        cout << "\nEnter the new name of the Publisher:";
         displayChoice();
-        cin >> tempString;
-        if(tempString != "n")
+        cout << "\nEnter the new name of the Publisher:";
+        getline(cin, tempString);
+        if(tempString != "")
             name = tempString;
 
-        cout << "\nEnter the new address of the Publisher: ";
-        displayChoice();
-        cin >> tempString;
-        if(tempString != "n")
+        cout << "\nEnter the new address of the Publisher:";
+        getline(cin, tempString);
+        if(tempString != "")
             address = tempString;
     }
 };
@@ -60,18 +59,17 @@ class Author{
         cout << "Name: " << name << endl << "Address: " << title << endl;
     }
 
-    void update(){
+    void updateData(){
         string tempString;
-        cout << "\nEnter the new name of the Author:";
         displayChoice();
+        cout << "\nEnter the new name of the Author:";
         cin >> tempString;
-        if(tempString != "n")
+        if(tempString != "")
             name = tempString;
 
-        cout << "\nEnter the new title of the Author: ";
-        displayChoice();
+        cout << "\nEnter the new title of the Author:";
         cin >> tempString;
-        if(tempString != "n")
+        if(tempString != "")
             title = tempString;
     }
 };
@@ -88,7 +86,6 @@ class Book{
     public:
     static int bookCount;
     Book(){
-        bookCount++;
         title = "Some Title";
         isbn = "1234567890";
         yearReleased = 1980;
@@ -100,7 +97,6 @@ class Book{
 
     Book(string newTitle, string newISBN, int newYearReleased, int newEditionYear, float newPrice,
         Publisher& newPublisher, Author& newAuthor){
-            bookCount++;
             title = newTitle;
             isbn = newISBN;
             yearReleased = newYearReleased;
@@ -108,7 +104,12 @@ class Book{
             price = newPrice;
             publisher = new Publisher(newPublisher);
             author = new Author(newAuthor);
-    };
+    }
+
+    // ~Book(){
+    //     delete publisher;
+    //     delete author;
+    // }
 
     void display(){
         cout << endl << "Details of the book: " << endl;
@@ -119,13 +120,133 @@ class Book{
         publisher->display();
         author->display();
     }
+
+    void update(){
+        string title;
+        string isbn;
+        int yearReleased;
+        int editionYear;
+        float price;
+        cout << endl << "Enter the details of the book: " << endl;
+        displayChoice();
+        cout << "Enter Book Title: ";
+        getline(cin, title);
+        cout << "Enter Book ISBN: ";
+        getline(cin, isbn);
+        cout << "Enter Book Year Released: ";
+        cin >> yearReleased;
+        cout << "Enter Book Edition Year: ";
+        cin >> editionYear;
+        cout << "Enter Book Price: ";
+        cin >> price;
+        author->updateData();
+        publisher->updateData();
+    }
 };
 
 int Book::bookCount = 0;
 
+class Library{
+    Book* books;
 
+    Book getBookData() {
+        string title, isbn;
+        int yearReleased, editionYear;
+        float price;
+
+        cin.ignore(); // Clear the newline character from the buffer
+
+        cout << "\nEnter the details of the book:" << endl;
+        cout << "Enter Book Title: ";
+        getline(cin, title);
+        cout << "Enter Book ISBN: ";
+        getline(cin, isbn);
+        cout << "Enter Book Year Released: ";
+        cin >> yearReleased;
+        cout << "Enter Book Edition Year: ";
+        cin >> editionYear;
+        cout << "Enter Book Price: ";
+        cin >> price;
+
+        string publisherName, publisherAddress;
+        cout << "Enter Publisher Details:\n";
+        cout << "Enter Publisher Name: ";
+        cin.ignore(); // Clear the newline character from the buffer
+        getline(cin, publisherName);
+        cout << "Enter Publisher Address: ";
+        getline(cin, publisherAddress);
+
+        string authName, authPosition;
+        cout << "Enter author name: ";
+        getline(cin, authName);
+        cout << "Enter author position: ";
+        getline(cin, authPosition);
+
+        Publisher publisher(publisherName, publisherAddress);
+        Author author(authName, authPosition);
+        return Book(title, isbn, yearReleased, editionYear, price, publisher, author);
+    }
+
+    public:
+    void addBook() {
+        Book* tempBooks = new Book[Book::bookCount + 1];
+        int choice;
+        cout << "0) Create a default Book\n1) Create a book with fixed data\n";
+        cin >> choice;
+        cin.ignore();
+        if (choice == 0) {
+            tempBooks[Book::bookCount] = Book();
+        } else if (choice == 1) {
+            tempBooks[Book::bookCount] = getBookData();
+        } else {
+            cout << "Invalid Input" << endl;
+            delete[] tempBooks;
+            return;
+        }
+        delete[] books; // Deallocate memory for the old array
+        books = tempBooks; // Assign the new array to books pointer
+        ++Book::bookCount;
+        cout << "New Book Added" << endl;
+    }
+
+    void displayAllBooks(){
+        for(int i = 0; i < Book::bookCount; i++){
+            cout << i << ": " ;
+            books[i].display();
+        }
+    }
+
+    void displayBook(int n){
+        books[n].display();
+    }
+
+    void updateBook(int n){
+        books[n].update();
+    }
+
+    void deleteBook(int n){
+        if (n < 0 || n >= Book::bookCount) {
+            cout << "Invalid book index." << endl;
+            return;
+        }
+
+        Book* tempBooks = new Book[Book::bookCount - 1];
+        for (int i = 0, j = 0; i < Book::bookCount; ++i) {
+            if (i != n) {
+                tempBooks[j++] = books[i];
+            }
+        }
+        delete[] books;
+        books = tempBooks;
+        --Book::bookCount;
+        cout << "Book deleted successfully." << endl;
+    }
+};
 
 int main(){
-
+    Library lib;
+    lib.addBook();
+    // lib.addBook();
+    cout << "I am here";
     return 0;
 }
