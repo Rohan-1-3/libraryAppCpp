@@ -35,12 +35,6 @@ This project is a simple Library Management System implemented in C++. It provid
     g++ -o library main.cpp
     ```
 
-3. Run the executable:
-
-    ```bash
-    ./library
-    ```
-
 ### Usage
 
 1. **Add a Book**: Follow the prompts to add a book with either default or user-provided details.
