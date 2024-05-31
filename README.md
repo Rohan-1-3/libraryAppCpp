@@ -26,7 +26,7 @@ This project is a simple Library Management System implemented in C++. It provid
 
     ```bash
     git clone https://github.com/your-username/library-management-system.git
-    cd library-management-system
+    cd libraryAppCpp
     ```
 
 2. Compile the project:
